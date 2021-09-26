@@ -2,11 +2,11 @@
 {
     public class Student
     {
-        public Student(string name, int id, string group_name)
+        public Student(string name, int id, string groupName)
         {
             Name = name;
             Id = id;
-            GroupName = group_name;
+            GroupName = groupName;
         }
 
         public string Name { get; }

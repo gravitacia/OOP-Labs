@@ -8,9 +8,9 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-       private List<Group> _groups = new List<Group>();
-       private int _studentsCounter = 0;
-       private int _studentsInGroup = 0;
+       private readonly List<Group> _groups = new List<Group>();
+       private int _studentsCounter = 100000;
+       private int _studentsInGroup;
 
        public Group AddGroup(string name)
        {
@@ -36,18 +36,23 @@ namespace Isu.Services
                throw new IsuException("Too many students");
            }
 
+           if (_studentsInGroup > 20)
+           {
+               _studentsInGroup = 0;
+           }
+
            return student;
        }
 
        public Student GetStudent(int id)
        {
-           if (id > _studentsCounter)
+           if (id > _studentsCounter | id < 99999 && id > 0)
            {
                throw new Exception("WARNING! Student not found.");
            }
            else
            {
-               return _groups.SelectMany(curGroup => curGroup.StudentsList).FirstOrDefault(curStudent => curStudent.Id == id);
+               return _groups.SelectMany(curGroup => curGroup.StudentsList).FirstOrDefault(student => student.Id == id);
            }
        }
 

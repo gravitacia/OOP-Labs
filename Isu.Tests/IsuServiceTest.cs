@@ -1,6 +1,5 @@
 using System;
 using Isu.Services;
-using Isu.Services;
 using Isu.Tools;
 using Isu.Modules;
 using NUnit.Framework;
@@ -48,7 +47,7 @@ namespace Isu.Tests
         {
             Assert.Catch<IsuException>(() =>
             {
-                Group invalidGroup = _isuService.AddGroup("00000000000");
+                _isuService.AddGroup("00000000000");
             });
         }
 
