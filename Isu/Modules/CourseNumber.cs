@@ -6,8 +6,14 @@ namespace Isu.Modules
     {
         public CourseNumber(char number)
         {
-            Number = number;
-            if (!IsAllowedCourse(number)) throw new Exception("This group got wrong course number");
+            if (!IsAllowedCourse(number))
+            {
+                throw new Exception("This group got wrong course number");
+            }
+            else
+            {
+                Number = number;
+            }
         }
 
         public char Number { get; }

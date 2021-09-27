@@ -23,4 +23,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="..\Modules">
+      <Link>Modules</Link>
+    </Folder>
+  </ItemGroup>
+
 </Project>

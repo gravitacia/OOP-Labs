@@ -7,10 +7,15 @@ namespace Isu.Modules
     {
         public Group(string name)
         {
-            GroupName = name;
-            StudentsList = new List<Student>();
-
-            if (!IsAllowed(name)) throw new IsuException("This group got wrong name");
+            if (!IsAllowed(name))
+            {
+                throw new IsuException("This group got wrong name");
+            }
+            else
+            {
+                GroupName = name;
+                StudentsList = new List<Student>();
+            }
         }
 
         public List<Student> StudentsList { get; set; }
