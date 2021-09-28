@@ -9,7 +9,7 @@ namespace Isu.Services
     public class IsuService : IIsuService
     {
        private readonly List<Group> _groups = new List<Group>();
-       private int _studentsCounter = 100000;
+       private int _studentsIsuNumber = 100000;
        private int _studentsInGroup;
 
        public Group AddGroup(string name)
@@ -21,7 +21,7 @@ namespace Isu.Services
 
        public Student AddStudent(Group group, string name)
        {
-           var student = new Student(name, _studentsCounter++, group.GroupName);
+           var student = new Student(name, _studentsIsuNumber++, group.GroupName);
            if (_studentsInGroup < 20)
            {
                foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
@@ -46,7 +46,7 @@ namespace Isu.Services
 
        public Student GetStudent(int id)
        {
-           if (id > _studentsCounter | id < 99999 && id > 0)
+           if (id > _studentsIsuNumber | id < 99999 && id > 0)
            {
                throw new Exception("WARNING! Student not found.");
            }

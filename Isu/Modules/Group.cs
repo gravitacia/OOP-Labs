@@ -24,7 +24,11 @@ namespace Isu.Modules
         private static bool IsAllowed(string name)
         {
             int groupNameLength = name.Length;
-            return groupNameLength == 5 && name[2] < '5' && name[2] > '0' && name[0] == 'M' && name[1] == '3';
+            char letterSymbol = name[0];
+            char numberSymbol = name[1];
+            char courseNumber = name[2];
+
+            return groupNameLength == 5 && courseNumber < '5' && courseNumber > '0' && letterSymbol == 'M' && numberSymbol == '3';
         }
     }
 }
