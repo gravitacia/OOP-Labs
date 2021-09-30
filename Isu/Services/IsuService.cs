@@ -8,94 +8,91 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-       private readonly List<Group> _groups = new List<Group>();
-       private int _studentsIsuNumber = 100000;
+        private readonly List<Group> _groups = new List<Group>();
+        private int _studentsIsuNumber = 100000;
 
-       public Group AddGroup(string name)
+        public Group AddGroup(string name)
        {
            var group = new Group(name);
            _groups.Add(group);
            return group;
        }
 
-       public Student AddStudent(Group group, string name)
+        public Student AddStudent(Group group, string name)
        {
            var student = new Student(name, _studentsIsuNumber++, group.GroupName);
-           if (group.StudentsInGroup < 20)
+           foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
            {
-               foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
-               {
-                   curGroup.StudentsList.Add(student);
-               }
-
-               group.StudentsInGroup++;
-           }
-           else
-           {
-               throw new IsuException("Too many students");
-           }
-
-           if (group.StudentsInGroup > 20)
-           {
-               group.StudentsInGroup = 0;
+               Group.AddStudentToGroup(@group, student);
            }
 
            return student;
        }
 
-       public Student GetStudent(int id)
+        public Student GetStudent(int id)
        {
-           const int wrongStudentIdMin = 0;
            const int wrongStudentIdMax = 99999;
-           if (id > _studentsIsuNumber | id < wrongStudentIdMax && id > wrongStudentIdMin)
-           {
-               throw new Exception("WARNING! Wrong Id!");
-           }
+           if (!(id <= _studentsIsuNumber | id > wrongStudentIdMax))
+               throw new Exception("WARNING! Student doesn't exist.");
 
-           foreach (Student student in from curGroup in _groups from student in curGroup.StudentsList where student.Id == id select student)
+           foreach (Student student in _groups.Select(curGroup => Group.GetStudentWithId(curGroup, id)).Where(student => student != null))
            {
                return student;
            }
 
-           throw new Exception("WARNING! Student not found.");
+           throw new Exception("WARNING! Student doesn't exist.");
        }
 
-       public Student FindStudent(string name)
-           {
-               return _groups.SelectMany(curGroup => curGroup.StudentsList).FirstOrDefault(curStudent => curStudent.Name == name);
-           }
+        public Student FindStudent(string name)
+        {
+            foreach (Student student in _groups.Select(curGroup => Group.GetStudentWithName(curGroup, name)).Where(student => student != null))
+            {
+                return student;
+            }
 
-       public List<Student> FindStudents(string groupName)
-           {
-               return _groups.Where(curGroup => curGroup.GroupName == groupName).Select(curGroup => curGroup.StudentsList).FirstOrDefault();
-           }
+            throw new IsuException("Student not found!");
+        }
 
-       public List<Student> FindStudents(CourseNumber courseNumber)
+        public List<Student> FindStudents(string groupName)
+        {
+            return Group.GetStudentsList(_groups, groupName);
+        }
+
+        public List<Student> FindStudents(CourseNumber courseNumber)
            {
                var allStudents = new List<Student>();
                foreach (Group curGroup in _groups.Where(curGroup => curGroup.GroupName[2] == courseNumber.Number))
                {
-                   allStudents.AddRange(curGroup.StudentsList);
+                   allStudents.AddRange(Group.GetAllStudentFromGroup(curGroup));
                }
 
                return allStudents;
            }
 
-       public Group FindGroup(string groupName)
-           {
-               return _groups.FirstOrDefault(curGroup => curGroup.GroupName == groupName);
-           }
+        public Group FindGroup(string groupName)
+        {
+            foreach (Group curGroup in _groups.Where(curGroup => curGroup.GroupName == groupName))
+            {
+                return curGroup;
+            }
 
-       public List<Group> FindGroups(CourseNumber courseNumber)
+            throw new IsuException();
+        }
+
+        public List<Group> FindGroups(CourseNumber courseNumber)
            {
                return _groups.Where(curGroup => curGroup.GroupName[2] == courseNumber.Number).ToList();
            }
 
-       public void ChangeStudentGroup(Student student, Group newGroup)
+        public void ChangeStudentGroup(Student student, Group newGroup)
            {
                foreach (Group curGroup in _groups)
                {
-                   curGroup.StudentsList.Remove(student);
+                   if (student.GroupName == curGroup.GroupName)
+                   {
+                       Group.RemoveStudentFromGroup(curGroup, student);
+                   }
+
                    AddStudent(newGroup, student.Name);
                }
            }

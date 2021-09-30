@@ -4,6 +4,8 @@ namespace Isu.Modules
 {
     public class CourseNumber
     {
+        private const char CourseNumberCheck0 = '0';
+        private const char CourseNumberCheck5 = '5';
         public CourseNumber(char number)
         {
             if (!IsAllowedCourse(number))
@@ -20,10 +22,7 @@ namespace Isu.Modules
 
         private static bool IsAllowedCourse(char number)
         {
-            const char courseNumberCheck0 = '0';
-            const char courseNumberCheck5 = '5';
-
-            return number is < courseNumberCheck5 and > courseNumberCheck0;
+            return number is < CourseNumberCheck5 and > CourseNumberCheck0;
         }
     }
 }
