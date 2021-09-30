@@ -19,16 +19,22 @@ namespace Isu.Modules
         }
 
         public List<Student> StudentsList { get; set; }
-
         public string GroupName { get; }
+        public int StudentsInGroup { get; set; }
+
         private static bool IsAllowed(string name)
         {
-            int groupNameLength = name.Length;
+            const int groupNameLength = 5;
+            const char courseNumberCheck0 = '0';
+            const char courseNumberCheck5 = '5';
+            const char facultySymbolM = 'M';
+            const char facultySymbol3 = '3';
+            int nameLength = name.Length;
             char letterSymbol = name[0];
             char numberSymbol = name[1];
             char courseNumber = name[2];
 
-            return groupNameLength == 5 && courseNumber < '5' && courseNumber > '0' && letterSymbol == 'M' && numberSymbol == '3';
+            return nameLength == groupNameLength && courseNumber is < courseNumberCheck5 and > courseNumberCheck0 && letterSymbol == facultySymbolM && numberSymbol == facultySymbol3;
         }
     }
 }

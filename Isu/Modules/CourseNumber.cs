@@ -20,7 +20,10 @@ namespace Isu.Modules
 
         private static bool IsAllowedCourse(char number)
         {
-            return number is < '5' and > '0';
+            const char courseNumberCheck0 = '0';
+            const char courseNumberCheck5 = '5';
+
+            return number is < courseNumberCheck5 and > courseNumberCheck0;
         }
     }
 }
