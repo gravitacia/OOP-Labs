@@ -21,9 +21,12 @@ namespace Isu.Services
         public Student AddStudent(Group group, string name)
        {
            var student = new Student(name, _studentsIsuNumber++, group.GroupName);
-           foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
+           foreach (Group curGroup in _groups)
            {
-               Group.AddStudentToGroup(@group, student);
+               if (curGroup == @group)
+               {
+                   curGroup.AddStudentToGroup(student);
+               }
            }
 
            return student;
@@ -35,7 +38,7 @@ namespace Isu.Services
            if (!(id <= _studentsIsuNumber | id > wrongStudentIdMax))
                throw new Exception("WARNING! Student doesn't exist.");
 
-           foreach (Student student in _groups.Select(curGroup => Group.GetStudentWithId(curGroup, id)).Where(student => student != null))
+           foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithId(id)).Where(student => student != null))
            {
                return student;
            }
@@ -45,7 +48,7 @@ namespace Isu.Services
 
         public Student FindStudent(string name)
         {
-            foreach (Student student in _groups.Select(curGroup => Group.GetStudentWithName(curGroup, name)).Where(student => student != null))
+            foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithName(name)).Where(student => student != null))
             {
                 return student;
             }
@@ -55,7 +58,12 @@ namespace Isu.Services
 
         public List<Student> FindStudents(string groupName)
         {
-            return Group.GetStudentsList(_groups, groupName);
+            foreach (Group curGroup in _groups.Where(curGroup => curGroup.GroupName == groupName))
+            {
+                return curGroup.GetStudentsList();
+            }
+
+            throw new IsuException("Students list not found");
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
@@ -63,7 +71,7 @@ namespace Isu.Services
                var allStudents = new List<Student>();
                foreach (Group curGroup in _groups.Where(curGroup => curGroup.GroupName[2] == courseNumber.Number))
                {
-                   allStudents.AddRange(Group.GetAllStudentFromGroup(curGroup));
+                   allStudents.AddRange(curGroup.GetAllStudentFromGroup());
                }
 
                return allStudents;
@@ -90,7 +98,7 @@ namespace Isu.Services
                {
                    if (student.GroupName == curGroup.GroupName)
                    {
-                       Group.RemoveStudentFromGroup(curGroup, student);
+                       curGroup.RemoveStudentFromGroup(student);
                    }
 
                    AddStudent(newGroup, student.Name);

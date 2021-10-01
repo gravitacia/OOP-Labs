@@ -28,11 +28,11 @@ namespace Isu.Modules
 
         public string GroupName { get; }
 
-        public static void AddStudentToGroup(Group group, Student student)
+        public void AddStudentToGroup(Student student)
         {
-            if (group._studentsList.Count < MaxStudentsInGroup)
+            if (_studentsList.Count < MaxStudentsInGroup)
             {
-                group._studentsList.Add(student);
+                _studentsList.Add(student);
             }
             else
             {
@@ -40,34 +40,29 @@ namespace Isu.Modules
             }
         }
 
-        public static void RemoveStudentFromGroup(Group group, Student student)
+        public void RemoveStudentFromGroup(Student student)
         {
-            group._studentsList.Remove(student);
+            _studentsList.Remove(student);
         }
 
-        public static Student GetStudentWithId(Group group, int id)
+        public Student GetStudentWithId(int id)
         {
-            return @group._studentsList.FirstOrDefault(curStudent => curStudent.Id == id);
+            return _studentsList.FirstOrDefault(curStudent => curStudent.Id == id);
         }
 
-        public static Student GetStudentWithName(Group group, string name)
+        public Student GetStudentWithName(string name)
         {
-            return @group._studentsList.FirstOrDefault(curStudent => curStudent.Name == name);
+            return _studentsList.FirstOrDefault(curStudent => curStudent.Name == name);
         }
 
-        public static List<Student> GetStudentsList(List<Group> group, string name)
+        public List<Student> GetStudentsList()
         {
-            foreach (Group groupName in @group.Where(groupName => groupName.GroupName == name))
-            {
-                return groupName._studentsList;
-            }
-
-            throw new IsuException("Group not found!");
+            return _studentsList;
         }
 
-        public static List<Student> GetAllStudentFromGroup(Group @group)
+        public List<Student> GetAllStudentFromGroup()
         {
-            return group._studentsList;
+            return _studentsList;
         }
 
         private static bool IsAllowed(string name)
