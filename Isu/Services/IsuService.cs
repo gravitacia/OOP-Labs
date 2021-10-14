@@ -38,9 +38,13 @@ namespace Isu.Services
            if (!(id <= _studentsIsuNumber | id > wrongStudentIdMax))
                throw new Exception("WARNING! Student doesn't exist.");
 
-           foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithId(id)).Where(student => student != null))
+           foreach (Group curGroup in _groups)
            {
-               return student;
+               Student student = curGroup.GetStudentWithId(id);
+               if (student != null)
+               {
+                   return student;
+               }
            }
 
            throw new Exception("WARNING! Student doesn't exist.");
@@ -48,9 +52,13 @@ namespace Isu.Services
 
         public Student FindStudent(string name)
         {
-            foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithName(name)).Where(student => student != null))
+            foreach (Group curGroup in _groups)
             {
-                return student;
+                Student student = curGroup.GetStudentWithName(name);
+                if (student != null)
+                {
+                    return student;
+                }
             }
 
             throw new IsuException("Student not found!");
