@@ -36,7 +36,12 @@ namespace Shops.Services
 
         public Shop FindShop(string productName)
         {
-            int minValue = (from curShop in _shops from curProduct in curShop.GetProductList() where curProduct.Value.RefProduct == productName select curProduct.Value.Price).Prepend(int.MaxValue).Min();
+            int minValue = (from curShop in _shops
+                from curProduct in curShop.GetProductList()
+                where curProduct.Value.RefProduct == productName
+                select curProduct.Value.Price)
+                .Prepend(int.MaxValue)
+                .Min();
 
             foreach (var curShop in from curShop in _shops from curProduct in curShop.GetProductList() where curProduct.Value.Price == minValue select curShop)
             {
