@@ -21,12 +21,9 @@ namespace Isu.Services
         public Student AddStudent(Group group, string name)
        {
            var student = new Student(name, _studentsIsuNumber++, group.GroupName);
-           foreach (Group curGroup in _groups)
+           foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
            {
-               if (curGroup == @group)
-               {
-                   curGroup.AddStudentToGroup(student);
-               }
+               curGroup.AddStudentToGroup(student);
            }
 
            return student;
@@ -52,13 +49,9 @@ namespace Isu.Services
 
         public Student FindStudent(string name)
         {
-            foreach (Group curGroup in _groups)
+            foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithName(name)).Where(student => student != null))
             {
-                Student student = curGroup.GetStudentWithName(name);
-                if (student != null)
-                {
-                    return student;
-                }
+                return student;
             }
 
             throw new IsuException("Student not found!");
