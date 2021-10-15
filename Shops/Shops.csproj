@@ -30,8 +30,8 @@
     <Compile Include="..\Modules\Product.cs">
       <Link>Modules\Product.cs</Link>
     </Compile>
-    <Compile Include="..\Modules\productProperty.cs">
-      <Link>Modules\productProperty.cs</Link>
+    <Compile Include="..\Modules\ProductProperty.cs">
+      <Link>Modules\ProductProperty.cs</Link>
     </Compile>
     <Compile Include="..\Modules\Shop.cs">
       <Link>Modules\Shop.cs</Link>

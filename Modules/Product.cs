@@ -2,13 +2,13 @@ namespace Shops.Modules
 {
     public class Product
     {
-        public Product(string productName, int count)
+        public Product(string productName, int id)
         {
             ProductName = productName;
-            Count = count;
+            Id = id;
         }
 
-        public int Count { get; set; }
+        public int Id { get; set; }
 
         public string ProductName { get; set; }
     }

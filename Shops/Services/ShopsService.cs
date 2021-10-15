@@ -6,13 +6,12 @@ using Shops.Tools;
 
 namespace Shops.Services
 {
-    public class ShopsManagment : IShopsManagment
+    public class ShopsService : IShopsService
     {
         private readonly List<Shop> _shops = new List<Shop>();
         private readonly List<Product> _products = new List<Product>();
         private int _shopId = 1;
         private int _productId = 0;
-        private Random rand = new Random();
 
         public Shop AddShop(string name, string addres)
         {
@@ -31,13 +30,13 @@ namespace Shops.Services
 
         public void ProductTransfer(Shop shop, string name, int price, int count)
         {
-            ProductProperty productProperty = shop.PriceAndCount(price, count);
+            ProductProperty productProperty = shop.PriceAndCount(AddProduct(name), price, count);
             shop.AddProductToShop(AddProduct(name), productProperty);
         }
 
         public Shop FindShop(string productName)
         {
-            int minValue = (from curShop in _shops from curProduct in curShop.GetProductList() where curProduct.Key.ProductName == productName select curProduct.Value.Price).Prepend(int.MaxValue).Min();
+            int minValue = (from curShop in _shops from curProduct in curShop.GetProductList() where curProduct.Value.RefProduct == productName select curProduct.Value.Price).Prepend(int.MaxValue).Min();
 
             foreach (var curShop in from curShop in _shops from curProduct in curShop.GetProductList() where curProduct.Value.Price == minValue select curShop)
             {
@@ -47,42 +46,41 @@ namespace Shops.Services
             throw new Exception("Warning!");
         }
 
-        public void BuyProduct(string productName, int count)
+        public void BuyProduct(string productName, int count, int buyersMoney)
+        {
+            var buyer = new Buyer(buyersMoney);
+            foreach (Shop curShop in _shops)
             {
-                int money = rand.Next(500, 1000);
-                var buyer = new Buyer(money);
-                foreach (Shop curShop in _shops)
+                foreach (var curProduct in curShop.GetProductList().Where(curProduct => curProduct.Value.RefProduct == productName))
                 {
-                    foreach (var curProduct in curShop.GetProductList().Where(curProduct => curProduct.Key.ProductName == productName))
+                    if (curProduct.Value.Count > count)
                     {
-                        if (curProduct.Value.Count > count)
+                        int canBuy = curProduct.Value.Price * count;
+                        if (buyer.Money > canBuy)
                         {
-                            int canBuy = curProduct.Value.Price * count;
-                            if (buyer.Money > canBuy)
+                            for (int i = 0; i < count; i++)
                             {
-                                for (int i = 0; i < count; i++)
-                                {
-                                    curShop.RemoveProductFromShop(curProduct.Key);
-                                    buyer.Money -= curProduct.Value.Price;
-                                    curShop.Money += curProduct.Value.Price;
-                                }
-                            }
-                            else
-                            {
-                                throw new Exception("You can't buy all properties!");
+                                curShop.RemoveProductFromShop(curProduct.Key);
+                                buyer.Money -= curProduct.Value.Price;
+                                curShop.Money += curProduct.Value.Price;
                             }
                         }
                         else
                         {
-                            throw new Exception("Not enough properties!");
+                            throw new Exception("You can't buy all properties!");
                         }
+                    }
+                    else
+                    {
+                        throw new Exception("Not enough properties!");
                     }
                 }
             }
+        }
 
         public void ChangeProductPrice(Shop shop, string name, int newPrice)
-            {
-                shop.ChangePrice(name, newPrice);
-            }
+        {
+            shop.ChangePrice(name, newPrice);
+        }
     }
 }

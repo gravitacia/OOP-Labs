@@ -7,14 +7,14 @@ namespace Shops.Modules
 {
     public class Shop
     {
-        private Dictionary<Product, ProductProperty> _productsList;
+        private Dictionary<int, ProductProperty> _productsList;
         public Shop(string shopName, int id, string addres, int money)
         {
             Name = shopName;
             Id = id;
             Addres = addres;
             Money = money;
-            _productsList = new Dictionary<Product, ProductProperty>();
+            _productsList = new Dictionary<int, ProductProperty>();
         }
 
         public int Money { get; set; }
@@ -26,30 +26,30 @@ namespace Shops.Modules
 
         public void AddProductToShop(Product product, ProductProperty productProperty)
         {
-            _productsList.Add(product, productProperty);
+            _productsList.Add(product.Id, productProperty);
         }
 
-        public ProductProperty PriceAndCount(int price, int count)
+        public ProductProperty PriceAndCount(Product product, int price, int count)
         {
-            var productProperty = new ProductProperty(price, count);
+            var productProperty = new ProductProperty(product, price, count);
             return productProperty;
         }
 
-        public Dictionary<Product, ProductProperty> GetProductList()
+        public Dictionary<int, ProductProperty> GetProductList()
         {
             return _productsList;
         }
 
-        public void RemoveProductFromShop(Product product)
+        public void RemoveProductFromShop(int id)
         {
-            _productsList.Remove(product);
+            _productsList.Remove(id);
         }
 
-        public Product ChangePrice(string name, int newPrice)
+        public int ChangePrice(string name, int newPrice)
         {
-            foreach (KeyValuePair<Product, ProductProperty> curProduct in _productsList)
+            foreach (KeyValuePair<int, ProductProperty> curProduct in _productsList)
             {
-                    if (curProduct.Key.ProductName == name)
+                    if (curProduct.Value.RefProduct == name)
                     {
                         curProduct.Value.Price = newPrice;
                     }
@@ -62,7 +62,7 @@ namespace Shops.Modules
 
         public int GetPrice(Shop shop, string name)
         {
-            foreach (var curProduct in shop._productsList.Where(curProduct => curProduct.Key.ProductName == name))
+            foreach (var curProduct in shop._productsList.Where(curProduct => curProduct.Value.RefProduct == name))
             {
                 return curProduct.Value.Price;
             }
@@ -70,11 +70,11 @@ namespace Shops.Modules
             throw new Exception("Warning");
         }
 
-        public bool IsContais(Shop shop, string name)
+        public bool IsContains(Shop shop, string name)
         {
             foreach (var curProduct in shop._productsList)
             {
-                if (curProduct.Key.ProductName == name)
+                if (curProduct.Value.RefProduct == name)
                 {
                     return true;
                 }
