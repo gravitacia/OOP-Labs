@@ -21,9 +21,12 @@ namespace Isu.Services
         public Student AddStudent(Group group, string name)
        {
            var student = new Student(name, _studentsIsuNumber++, group.GroupName);
-           foreach (Group curGroup in _groups.Where(curGroup => curGroup == @group))
+           foreach (Group curGroup in _groups)
            {
-               curGroup.AddStudentToGroup(student);
+               if (curGroup == @group)
+               {
+                   curGroup.AddStudentToGroup(student);
+               }
            }
 
            return student;
@@ -35,13 +38,9 @@ namespace Isu.Services
            if (!(id <= _studentsIsuNumber | id > wrongStudentIdMax))
                throw new Exception("WARNING! Student doesn't exist.");
 
-           foreach (Group curGroup in _groups)
+           foreach (Student student in _groups.Select(curGroup => curGroup.GetStudentWithId(id)).Where(student => student != null))
            {
-               Student student = curGroup.GetStudentWithId(id);
-               if (student != null)
-               {
-                   return student;
-               }
+               return student;
            }
 
            throw new Exception("WARNING! Student doesn't exist.");
