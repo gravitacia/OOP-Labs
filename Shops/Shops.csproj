@@ -24,9 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="..\Modules">
-      <Link>Modules</Link>
-    </Folder>
+    <Compile Include="..\Modules\Buyer.cs">
+      <Link>Modules\Buyer.cs</Link>
+    </Compile>
+    <Compile Include="..\Modules\Product.cs">
+      <Link>Modules\Product.cs</Link>
+    </Compile>
+    <Compile Include="..\Modules\ProductProperty.cs">
+      <Link>Modules\ProductProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\Modules\Shop.cs">
+      <Link>Modules\Shop.cs</Link>
+    </Compile>
   </ItemGroup>
 
 </Project>
