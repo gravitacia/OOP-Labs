@@ -47,12 +47,7 @@ namespace Isu.Modules
 
         public Student GetStudentWithId(int id)
         {
-            foreach (var curStudent in _studentsList)
-            {
-                if (curStudent.Id == id) return curStudent;
-            }
-
-            return null;
+            return _studentsList.FirstOrDefault(curStudent => curStudent.Id == id);
         }
 
         public Student GetStudentWithName(string name)
