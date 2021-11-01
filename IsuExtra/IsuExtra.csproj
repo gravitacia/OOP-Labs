@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Isu.Tests\Isu.Tests.csproj" />
     <ProjectReference Include="..\Isu\Isu.csproj" />
   </ItemGroup>
 
