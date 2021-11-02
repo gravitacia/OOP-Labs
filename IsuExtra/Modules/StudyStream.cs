@@ -54,7 +54,7 @@ namespace IsuExtra.Modules
                 return curGroup.GetStudentsListFromGroup();
             }
 
-            throw new Exception("Warning!");
+            throw new Exception("Warning! Students not found!");
         }
 
         public List<StudyGroup> GetStudyGroupsList()

@@ -4,14 +4,16 @@ namespace IsuExtra.Modules
 {
     public class UniversityClass
     {
-        public UniversityClass(Group groupName, string time, string teacherName, int audienceNumber)
+        public UniversityClass(Group groupName, string time, string teacherName, int audienceNumber, string day)
         {
             GroupName = groupName.GroupName;
             Time = time;
             TeacherName = teacherName;
             AudienceNumber = audienceNumber;
+            Day = day;
         }
 
+        public string Day { get; set; }
         public int AudienceNumber { get; set; }
 
         public string TeacherName { get; set; }

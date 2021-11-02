@@ -1,14 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using Isu;
 using Isu.Modules;
-using Isu.Services;
-using Isu.Tools;
 using IsuExtra.Modules;
-using IsuExtra.Services;
 using IsuExtra.Tools;
 
 namespace IsuExtra.Services
@@ -16,7 +10,7 @@ namespace IsuExtra.Services
     public class IsuExtraService : IIsuExtraService
     {
         private List<UltimateCourse> _courses = new List<UltimateCourse>();
-        private Dictionary<Group, Schedule> _schedules = new Dictionary<Group, Schedule>();
+        private Dictionary<string, Schedule> _schedules = new Dictionary<string, Schedule>();
 
         public UltimateCourse AddUltimateCourse(string courseName)
         {
@@ -48,23 +42,23 @@ namespace IsuExtra.Services
 
         public Schedule AddGroupSchedule(Group group, Schedule schedule)
         {
-            if (_schedules.ContainsKey(group))
+            if (_schedules.ContainsKey(group.GroupName))
             {
                 throw new Exception("Schedule of this group is already exists!");
             }
 
-            _schedules.Add(group, schedule);
-            return _schedules[group];
+            _schedules.Add(group.GroupName, schedule);
+            return _schedules[group.GroupName];
         }
 
         public Schedule GetGroupSchedule(Group group)
         {
-            if (!_schedules.ContainsKey(group))
+            if (!_schedules.ContainsKey(group.GroupName))
             {
-                throw new IsuException("Warning!");
+                throw new Exception("Warning! Schedules doesn't exist!");
             }
 
-            return _schedules[group];
+            return _schedules[group.GroupName];
         }
 
         public List<Student> GetStudentsFromStream(string courseName, string streamName)
@@ -79,7 +73,7 @@ namespace IsuExtra.Services
 
         public void RemoveGroupSchedule(Group group)
         {
-            bool result = _schedules.Remove(group);
+            bool result = _schedules.Remove(group.GroupName);
             if (!result)
             {
                 throw new Exception("Schedule of this group doesn't exists!");
@@ -98,7 +92,12 @@ namespace IsuExtra.Services
 
         public bool ScheduleValidation(Schedule ultimateSchedule, Schedule simpSchedule)
         {
-            if ((from curClass in ultimateSchedule.GetClassesList() from curSimpClass in simpSchedule.GetClassesList() where curSimpClass.Time != curClass.Time select curClass).Any())
+            if (ultimateSchedule.GetClassesList()
+                .SelectMany(
+                    curClass => simpSchedule.GetClassesList(),
+                    (curClass, curSimpClass) => new { curClass, curSimpClass })
+                .Where(@t => @t.curSimpClass.Time != @t.curClass.Time)
+                .Select(@t => @t.curClass).Any())
             {
                 return true;
             }

@@ -17,7 +17,6 @@ namespace IsuExtra.Tests
         [SetUp]
         public void Setup()
         {
-            //TODO: implement
             _isuExtraService = new IsuExtraService();
             _isuService = new IsuService();
         }
@@ -39,7 +38,7 @@ namespace IsuExtra.Tests
             Student student1 = _isuService.AddStudent(studentGroup, "AK");
             
             var ultimateGroup = new Group("K1111");
-            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302);
+            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302, "monday");
             var ultimateSchedule = new Schedule();
             
             ultimateSchedule.AddClassToSchedule(universityClass);
@@ -63,7 +62,7 @@ namespace IsuExtra.Tests
             var studentGroup = new Group("M3210");
             Student student1 = _isuService.AddStudent(studentGroup, "AK");
             var ultimateGroup = new Group("K1111");
-            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302);
+            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302, "monday");
             var ultimateSchedule = new Schedule();
             
             ultimateSchedule.AddClassToSchedule(universityClass);
@@ -76,7 +75,7 @@ namespace IsuExtra.Tests
             _isuExtraService.AddStudentToCourse(student1, "Cool", studyGroup, ultimateSchedule);
             _isuExtraService.RemoveStudentFromCourse(student1, ultimateCourse.Name, studyStream.Name);
             
-            Assert.True(!(_isuExtraService.GetStudentsFromStream(ultimateCourse.Name, studyStream.Name)).Contains(student1));
+            Assert.False(_isuExtraService.GetStudentsFromStream(ultimateCourse.Name, studyStream.Name).Contains(student1));
             
         }
 
@@ -85,8 +84,8 @@ namespace IsuExtra.Tests
         {
             var ultimateGroup = new Group("K1111");
             
-            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302);
-            var universitySimpClass = new UniversityClass(ultimateGroup, "10:00-11:30", "AA", 302);
+            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302, "monday");
+            var universitySimpClass = new UniversityClass(ultimateGroup, "10:00-11:30", "AA", 302, "monday");
             var ultimateSchedule = new Schedule();
             var simpSchedule = new Schedule();
             
@@ -108,7 +107,7 @@ namespace IsuExtra.Tests
             Student student4 = _isuService.AddStudent(studentGroup, "AS");
             
             var ultimateGroup = new Group("K1111");
-            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302);
+            var universityClass = new UniversityClass(ultimateGroup, "8:20-9:50", "AA", 302, "monday");
             var ultimateSchedule = new Schedule();
             
             ultimateSchedule.AddClassToSchedule(universityClass);
