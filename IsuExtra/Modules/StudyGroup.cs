@@ -7,39 +7,33 @@ namespace IsuExtra.Modules
 {
     public class StudyGroup
     {
-        private List<Student> _studentsInGroup = new List<Student>();
         private int _size;
 
         public StudyGroup(Group @group, Schedule schedule, int size)
         {
-            StudyGroupName = group.GroupName;
+            RefGroup = group;
             StudyGroupSchedule = schedule;
             _size = size;
         }
 
+        public Group RefGroup { get; set; }
+
         public Schedule StudyGroupSchedule { get; set; }
 
-        public string StudyGroupName { get; set; }
-
-        public void AddStudentToStudyGroup(Student student)
+        public void AddStudentToStudyGroup(Student student, Group @group)
         {
-            if (!CapacityValidation()) throw new Exception();
-            _studentsInGroup.Add(student);
+            if (!CapacityValidation(group)) throw new Exception();
+            group.GetStudentsList().Add(student);
         }
 
-        public bool CapacityValidation()
+        public bool CapacityValidation(Group @group)
         {
-            if (_studentsInGroup.Capacity < _size)
+            if (group.GetStudentsList().Capacity < _size)
             {
                 return true;
             }
 
             throw new Exception("Invalid numberic format");
-        }
-
-        public List<Student> GetStudentsListFromGroup()
-        {
-            return _studentsInGroup;
         }
     }
 }

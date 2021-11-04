@@ -82,7 +82,7 @@ namespace IsuExtra.Services
 
         public string GetStudentFromStudyGroup(StudyGroup studyGroup, string studentName)
         {
-            foreach (Student curStudent in studyGroup.GetStudentsListFromGroup().Where(curStudent => curStudent.Name == studentName))
+            foreach (Student curStudent in studyGroup.RefGroup.GetStudentsList().Where(curStudent => curStudent.Name == studentName))
             {
                 return curStudent.Name;
             }
@@ -122,7 +122,7 @@ namespace IsuExtra.Services
                 return curCourse.AddStudyStream(studyStreamName, size);
             }
 
-            throw new Exception("Warning!");
+            throw new Exception("Warning! This stream is already exist!");
         }
 
         public void AddStudyGroup(StudyStream studyStream, StudyGroup studyGroup)

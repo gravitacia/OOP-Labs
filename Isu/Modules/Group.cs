@@ -15,15 +15,8 @@ namespace Isu.Modules
         private List<Student> _studentsList;
         public Group(string name)
         {
-            if (!IsAllowed(name))
-            {
-                throw new IsuException("This group got wrong name");
-            }
-            else
-            {
-                GroupName = name;
-                _studentsList = new List<Student>();
-            }
+            GroupName = name;
+            _studentsList = new List<Student>();
         }
 
         public string GroupName { get; }

@@ -60,7 +60,7 @@ namespace IsuExtra.Modules
 
         public Student AddStudentToUltimateCourse(Student student, StudyGroup studyGroup, Schedule schedule)
         {
-            studyGroup.AddStudentToStudyGroup(student);
+            studyGroup.AddStudentToStudyGroup(student, studyGroup.RefGroup);
             _studentsSchedule.Add(student.Name, schedule);
 
             return student;

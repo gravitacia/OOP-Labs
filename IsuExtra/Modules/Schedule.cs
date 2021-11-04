@@ -13,7 +13,10 @@ namespace IsuExtra
 
         public void AddClassToSchedule(UniversityClass universityClass)
         {
-            if (_schedule.Any(curClass => curClass.Day == universityClass.Day))
+            if (_schedule.Any(curClass => curClass.Day == universityClass.Day
+                                          && curClass.Time == universityClass.Time
+                                          && curClass.AudienceNumber == universityClass.AudienceNumber
+                                          && curClass.TeacherName == universityClass.TeacherName))
             {
                 throw new Exception("This class already exist");
             }

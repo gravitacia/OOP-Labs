@@ -18,7 +18,7 @@ namespace IsuExtra.Modules
 
         public void AddStudyGroup(StudyGroup studyGroup)
         {
-            if (_groupsOnStream.Any(curGroup => studyGroup.StudyGroupName == curGroup.StudyGroupName))
+            if (_groupsOnStream.Any(curGroup => studyGroup.RefGroup.GroupName == curGroup.RefGroup.GroupName))
             {
                 throw new Exception("This group already exist");
             }
@@ -34,15 +34,19 @@ namespace IsuExtra.Modules
         public void RemoveStudentFromGroup(Student student)
         {
             Student removeStudent = null;
-            foreach (StudyGroup curGroup1 in _groupsOnStream)
+            foreach (StudyGroup curGroup in _groupsOnStream)
             {
-                if (curGroup1.GetStudentsListFromGroup().Any(curStudent1 => curStudent1.Name == student.Name))
+                foreach (var curStudent in curGroup.RefGroup.GetStudentsList())
                 {
-                    removeStudent = student;
+                    if (curStudent.Name == student.Name)
+                    {
+                        removeStudent = student;
+                        break;
+                    }
                 }
 
                 if (removeStudent == null) continue;
-                curGroup1.GetStudentsListFromGroup().Remove(removeStudent);
+                curGroup.RefGroup.RemoveStudentFromGroup(removeStudent);
                 break;
             }
         }
@@ -51,7 +55,7 @@ namespace IsuExtra.Modules
         {
             foreach (StudyGroup curGroup in _groupsOnStream)
             {
-                return curGroup.GetStudentsListFromGroup();
+                return curGroup.RefGroup.GetStudentsList();
             }
 
             throw new Exception("Warning! Students not found!");
@@ -64,12 +68,12 @@ namespace IsuExtra.Modules
 
         public StudyGroup FindStudyGroup(string studyGroupName)
         {
-            foreach (StudyGroup curGroup in _groupsOnStream.Where(curGroup => curGroup.StudyGroupName == studyGroupName))
+            foreach (StudyGroup curGroup in _groupsOnStream.Where(curGroup => curGroup.RefGroup.GroupName == studyGroupName))
             {
                 return curGroup;
             }
 
-            throw new Exception("Warning!");
+            throw new Exception("Warning! This group doesnt exist!");
         }
     }
 }
