@@ -36,13 +36,9 @@ namespace IsuExtra.Modules
             Student removeStudent = null;
             foreach (StudyGroup curGroup in _groupsOnStream)
             {
-                foreach (var curStudent in curGroup.RefGroup.GetStudentsList())
+                if (curGroup.RefGroup.GetStudentsList().Any(curStudent => curStudent.Name == student.Name))
                 {
-                    if (curStudent.Name == student.Name)
-                    {
-                        removeStudent = student;
-                        break;
-                    }
+                    removeStudent = student;
                 }
 
                 if (removeStudent == null) continue;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Isu.Tools;
 
@@ -15,8 +15,15 @@ namespace Isu.Modules
         private List<Student> _studentsList;
         public Group(string name)
         {
-            GroupName = name;
-            _studentsList = new List<Student>();
+            if (!IsAllowed(name))
+            {
+                throw new IsuException("This group got wrong name");
+            }
+            else
+            {
+                GroupName = name;
+                _studentsList = new List<Student>();
+            }
         }
 
         public string GroupName { get; }
