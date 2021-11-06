@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Isu.Tools;
@@ -15,10 +16,13 @@ namespace Isu.Modules
         private List<Student> _studentsList;
         public Group(string name)
         {
+            if (!IsAllowed(name))
             {
-                GroupName = name;
-                _studentsList = new List<Student>();
+                throw new IsuException("You cant add this group!");
             }
+
+            GroupName = name;
+            _studentsList = new List<Student>();
         }
 
         public string GroupName { get; }
@@ -64,10 +68,10 @@ namespace Isu.Modules
         {
             int nameLength = name.Length;
             char letterSymbol = name[0];
-            char numberSymbol = name[1];
             char courseNumber = name[2];
 
-            return nameLength == GroupNameLength && courseNumber is < CourseNumberCheck5 and > CourseNumberCheck0 && letterSymbol == FacultySymbolM && numberSymbol == FacultySymbol3;
+            return nameLength == GroupNameLength && courseNumber is < CourseNumberCheck5
+                and > CourseNumberCheck0 && char.IsLetter(letterSymbol);
         }
     }
 }
