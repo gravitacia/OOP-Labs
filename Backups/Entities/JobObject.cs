@@ -1,22 +1,19 @@
 using System.IO;
 
-namespace Backups.Entities;
-
-public class JobObject
+namespace Backups.Entities
 {
-    public JobObject(string path)
+    public class JobObject
     {
-        FileInfo file = new FileInfo(path);
-        PathName = file.DirectoryName;
-        FileName = file.Name;
-    }
+        public JobObject(string fileName, string filePath)
+        {
+            PathName = filePath;
+            FileName = fileName;
+            FullName = PathName + FileName;
+        }
 
-    public string FileName { get; set; }
-    public string PathName { get;  }
+        public string FullName { get; set; }
 
-    public FileInfo GetFileProperty(string path)
-    {
-        FileInfo file = new FileInfo(path);
-        return file;
+        public string FileName { get; set; }
+        public string PathName { get; }
     }
 }

@@ -1,48 +1,60 @@
 using System.Collections.Generic;
-using System.IO;
 using Backups.Algorithm;
+using Backups.Entities;
+using Backups.Repository;
 
-namespace Backups.Entities;
-
-public class BackupJob
+namespace Backups
 {
-    private List<RestorePoint> _restorePoints = new List<RestorePoint>();
-    private List<JobObject> _files = new List<JobObject>();
-    private List<Storage> _storages = new List<Storage>();
-
-    public void AddFile(string filePath)
+    public class BackupJob
     {
-        JobObject file = new JobObject(filePath);
-        _files.Add(file);
-    }
+        private IRepository _repository;
+        private int _currentRestorePointNumber = 1;
 
-    public void CreateRestorePoint(string ans)
-    {
-        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
-        string subpath = @"RestorePoint_\";
-        if (!directory.Exists)
+        private List<JobObject> _jobObjects = new List<JobObject>();
+        private List<RestorePoint> _restorePoints = new List<RestorePoint>();
+
+        public BackupJob(string jobName, IRepository repository, IAlgorithm algorithm)
         {
-            directory.Create();
+            JobName = jobName;
+            _repository = repository;
+            Algo = algorithm;
         }
 
-        directory.CreateSubdirectory(subpath);
-        foreach (JobObject file in _files)
+        public IAlgorithm Algo { get; set; }
+
+        public string JobName { get; }
+
+        public void AddJobObject(JobObject jobObject)
         {
-            var storage = new Storage(file.PathName);
-            _storages.Add(storage);
+            _jobObjects.Add(jobObject);
         }
 
-        var restorePoint = new RestorePoint(_storages, subpath);
-        if (ans == "split")
+        public void RemoveJobObject(JobObject jobObject)
         {
-            var split = new SplitStorage();
-            split.SaveData(restorePoint.GetFiles());
+            _jobObjects.Remove(jobObject);
         }
 
-        if (ans == "single")
+        public void NewRestorePoint()
         {
-            var single = new SingleStorage();
-            single.SaveData(restorePoint.GetFiles());
+            List<Storage> storages = _repository.CreateStorages(this);
+
+            var restorePoint = new RestorePoint(storages, _currentRestorePointNumber++);
+            _restorePoints.Add(restorePoint);
+        }
+
+        public List<JobObject> GetJobObjects()
+        {
+            return _jobObjects;
+        }
+
+        public List<RestorePoint> GetRestorePoints()
+        {
+            return _restorePoints;
+        }
+
+        public int CurrentRestorePointNumber()
+        {
+            return _currentRestorePointNumber;
         }
     }
 }
