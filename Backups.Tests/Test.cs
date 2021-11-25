@@ -53,32 +53,5 @@ namespace Backups.Tests
             Assert.False(backup.GetJobObjects().Contains(file4));
             Assert.Contains(backup.GetRestorePoints().Count, new[]{backup.CurrentRestorePointNumber()});
         }
-
-        [Test]
-        [Ignore("Test for local system")]
-        public void TestTwo_UsingSingleStorage()
-        {
-            var backup = new BackupJob("Job2", new Repository.Repository(), new SingleStorage());
-            var file1 = new JobObject("a.txt", "./");
-            var file2 = new JobObject("b.txt", "./");
-
-            backup.AddJobObject(file1);
-            backup.AddJobObject(file2);
-            
-            backup.NewRestorePoint();
-            foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber).
-                         Where(restorePoint => restorePoint.Storages != null))
-            {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber());
-            }
-            
-            backup.NewRestorePoint();
-            foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
-            {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber());
-            }
-        }
     }
 }
