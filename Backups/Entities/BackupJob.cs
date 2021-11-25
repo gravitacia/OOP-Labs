@@ -8,7 +8,7 @@ namespace Backups
     public class BackupJob
     {
         private IRepository _repository;
-        private int _currentRestorePointNumber = 1;
+        private int _currentRestorePointNumber;
 
         private List<JobObject> _jobObjects = new List<JobObject>();
         private List<RestorePoint> _restorePoints = new List<RestorePoint>();

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Backups.Algorithm;
@@ -8,15 +9,12 @@ namespace Backups.Tests
 {
     public class Test
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
+        
         [Test]
         public void TestOne_CreateRPAddSomeFilesDeleteOneOfThem()
         {
             var backup = new BackupJob("Job1", new Repository.Repository(), new SplitStorage());
+            var storages = new List<Storage>();
             var file1 = new JobObject("a.txt", "./");
             var file2 = new JobObject("b.txt", "./");
             var file3 = new JobObject("c.txt", "./");
@@ -28,29 +26,36 @@ namespace Backups.Tests
             
             backup.NewRestorePoint();
             foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber()-1 == restorePoint.RestorePointNumber).
+                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber).
                          Where(restorePoint => restorePoint.Storages != null))
             {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
+                storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName, 
+                    backup.CurrentRestorePointNumber());
             }
             
             backup.NewRestorePoint();
             foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber()-1 == restorePoint.RestorePointNumber))
+                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
             {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
+                storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName,
+                    backup.CurrentRestorePointNumber());
             }
             
             backup.RemoveJobObject(file4);
             backup.NewRestorePoint();
             foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber()-1 == restorePoint.RestorePointNumber))
+                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
             {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
+                storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName, 
+                    backup.CurrentRestorePointNumber());
             }
+
+            Assert.False(backup.GetJobObjects().Contains(file4));
+            Assert.Contains(backup.GetRestorePoints().Count, new[]{backup.CurrentRestorePointNumber()});
         }
 
         [Test]
+        [Ignore("Test for local system")]
         public void TestTwo_UsingSingleStorage()
         {
             var backup = new BackupJob("Job2", new Repository.Repository(), new SingleStorage());
@@ -62,17 +67,17 @@ namespace Backups.Tests
             
             backup.NewRestorePoint();
             foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber()-1 == restorePoint.RestorePointNumber).
+                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber).
                          Where(restorePoint => restorePoint.Storages != null))
             {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
+                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber());
             }
             
             backup.NewRestorePoint();
             foreach (RestorePoint restorePoint in backup.GetRestorePoints().
-                         Where(restorePoint => backup.CurrentRestorePointNumber()-1 == restorePoint.RestorePointNumber))
+                         Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
             {
-                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
+                backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber());
             }
         }
     }
