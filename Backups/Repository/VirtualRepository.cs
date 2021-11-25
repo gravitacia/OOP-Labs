@@ -4,9 +4,9 @@ using System.IO.Compression;
 using System.Linq;
 using Backups.Entities;
 
-namespace Backups.Repository;
-
-public class VirtualRepository : IRepository
+namespace Backups.Repository
+{
+    public class VirtualRepository : IRepository
     {
         public List<Storage> CreateStorages(BackupJob backupJob)
         {
@@ -30,3 +30,4 @@ public class VirtualRepository : IRepository
             }
         }
     }
+}
