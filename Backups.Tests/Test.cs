@@ -48,6 +48,8 @@ namespace Backups.Tests
             {
                 backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
             }
+            
+            Assert.False(backup.GetJobObjects().Contains(file4));
         }
 
         [Test]
@@ -74,6 +76,7 @@ namespace Backups.Tests
             {
                 backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
             }
+            Assert.True(backup.GetJobObjects().Contains(backup.));
         }
     }
 }
