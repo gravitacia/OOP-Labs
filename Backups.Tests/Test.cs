@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Backups.Algorithm;
 using Backups.Entities;
+using Backups.Repository;
 using NUnit.Framework;
 
 namespace Backups.Tests
@@ -13,7 +14,7 @@ namespace Backups.Tests
         [Test]
         public void TestOne_CreateRPAddSomeFilesDeleteOneOfThem()
         {
-            var backup = new BackupJob("Job1", new Repository.Repository(), new SplitStorage());
+            var backup = new BackupJob("Job1", new VirtualRepository(), new SplitStorage());
             var storages = new List<Storage>();
             var file1 = new JobObject("a.txt", "./");
             var file2 = new JobObject("b.txt", "./");
@@ -30,7 +31,7 @@ namespace Backups.Tests
                          Where(restorePoint => restorePoint.Storages != null))
             {
                 storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName, 
-                    backup.CurrentRestorePointNumber());
+                    backup.CurrentRestorePointNumber(), backup.Repo);
             }
             
             backup.NewRestorePoint();
@@ -38,7 +39,7 @@ namespace Backups.Tests
                          Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
             {
                 storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName,
-                    backup.CurrentRestorePointNumber());
+                    backup.CurrentRestorePointNumber(), backup.Repo);
             }
             
             backup.RemoveJobObject(file4);
@@ -47,7 +48,7 @@ namespace Backups.Tests
                          Where(restorePoint => backup.CurrentRestorePointNumber() == restorePoint.RestorePointNumber))
             {
                 storages = backup.Algo.SaveData(restorePoint.Storages, backup.JobName, 
-                    backup.CurrentRestorePointNumber());
+                    backup.CurrentRestorePointNumber(), backup.Repo);
             }
 
             Assert.False(backup.GetJobObjects().Contains(file4));

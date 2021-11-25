@@ -7,7 +7,6 @@ namespace Backups
 {
     public class BackupJob
     {
-        private IRepository _repository;
         private int _currentRestorePointNumber;
 
         private List<JobObject> _jobObjects = new List<JobObject>();
@@ -16,13 +15,15 @@ namespace Backups
         public BackupJob(string jobName, IRepository repository, IAlgorithm algorithm)
         {
             JobName = jobName;
-            _repository = repository;
+            Repo = repository;
             Algo = algorithm;
         }
 
-        public IAlgorithm Algo { get; set; }
+        public IAlgorithm Algo { get; }
 
         public string JobName { get; }
+
+        public IRepository Repo { get; }
 
         public void AddJobObject(JobObject jobObject)
         {
@@ -36,7 +37,7 @@ namespace Backups
 
         public void NewRestorePoint()
         {
-            List<Storage> storages = _repository.CreateStorages(this);
+            List<Storage> storages = Repo.CreateStorages(this);
 
             var restorePoint = new RestorePoint(storages, _currentRestorePointNumber++);
             _restorePoints.Add(restorePoint);
