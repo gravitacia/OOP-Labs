@@ -76,7 +76,6 @@ namespace Backups.Tests
             {
                 backup.Algo.SaveData(restorePoint.Storages, backup.JobName, backup.CurrentRestorePointNumber()-1);
             }
-            Assert.True(backup.GetJobObjects().Contains(backup.));
         }
     }
 }
