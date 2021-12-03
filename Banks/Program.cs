@@ -1,6 +1,9 @@
-﻿namespace Banks
+﻿using System;
+using System.IO;
+
+namespace Banks
 {
-    internal static class Program
+    internal class Program
     {
         private static void Main()
         {
