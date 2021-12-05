@@ -22,8 +22,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Transactions&amp;Operations" />
-  </ItemGroup>
-
 </Project>
