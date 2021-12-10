@@ -1,22 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using Banks.AccountType;
+using Banks.BankInformationBuilder;
 using Banks.BankService;
+using Banks.TransactionsService;
 using Banks.UserService;
 
 namespace Banks
 {
     internal static class Program
     {
+        public static void ShowClients(List<User> users)
+        {
+            Console.WriteLine("-----Clientlist:-------");
+            Console.WriteLine("ID\tName\tSurname\tTrusted\tPassprt\tAddress");
+            foreach (User user in users)
+                Console.WriteLine(user.UId + "\t" + user.Name + "\t" + user.Surname + "\t" + user.Istrustful() + "\t" + user.Passport + "\t" + user.Address);
+            Console.WriteLine("-----------------------");
+        }
+
+        public static void ShowAccounts(List<AccountReference> accounts)
+        {
+            Console.WriteLine("-----Accountlist:------");
+            Console.WriteLine("ID\tClID\tType\tMoney");
+            foreach (AccountReference account in accounts)
+                Console.WriteLine(account.Id + "\t" + account.ClientId + "\t" + account.AccType + "\t" + account.Money);
+            Console.WriteLine("-----------------------");
+        }
+
+        public static void ShowTransactions(List<BankTransactions> transactions)
+        {
+            Console.WriteLine("-----Transactions:-----");
+            Console.WriteLine("ID\tType\tID1\tID2\tCncld\tMoney");
+            foreach (BankTransactions transaction in transactions)
+                Console.WriteLine(transaction.Id + "\t" + transaction.Type + "\t" + transaction.FirstAcc + "\t" + transaction.SecAcc + "\t" + transaction.IsCanceled + "\t" + transaction.Amount);
+            Console.WriteLine("-----------------------");
+        }
+
         private static void Main()
         {
             var users = new List<User>();
             var date = new DateProvider(DateTime.Today.Day, DateTime.Today.Month, DateTime.Today.Year);
-            var depositspercents = new List<DYP>();
-            depositspercents.Add(new DYP(0, 5));
-            depositspercents.Add(new DYP(50000, 5.5));
-            depositspercents.Add(new DYP(100000, 6));
+            var depositspercents = new List<DepositYearPercent>();
+            depositspercents.Add(new DepositYearPercent(0, 5));
+            depositspercents.Add(new DepositYearPercent(50000, 5.5));
+            depositspercents.Add(new DepositYearPercent(100000, 6));
             IUserBuilder userBuilder = new UserBuilder();
-            var bank = new Bank(0, new BankInformation(100000, 3.65, -100000, 500, depositspercents));
+            IBankInfoBuilder bankInfoBuilder = new BankInfoBuilder();
+            bankInfoBuilder.SetTrustLimit(100000);
+            bankInfoBuilder.SetDebitYearlyPercent(3.65);
+            bankInfoBuilder.SetCreditLimit(-100000);
+            bankInfoBuilder.SetCreditMonthlyComission(500);
+            bankInfoBuilder.SetDepositYearlyPercent(depositspercents);
+            var bank = new Bank(0, bankInfoBuilder.GetBankInfo());
 
             string ans = "1";
             while (ans == "1")
@@ -76,7 +112,7 @@ namespace Banks
                     if (accType == "1")
                     {
                         Console.WriteLine("Okay, choose our hero");
-                        bank.ShowClients(users);
+                        ShowClients(users);
                         Console.WriteLine("Type an UId");
                         string uid = Console.ReadLine();
                         Console.WriteLine("Type a count of money");
@@ -87,7 +123,7 @@ namespace Banks
                     if (accType == "2")
                     {
                         Console.WriteLine("Okay, choose our hero");
-                        bank.ShowClients(users);
+                        ShowClients(users);
                         Console.WriteLine("Type an UId");
                         string uid = Console.ReadLine();
                         Console.WriteLine("Type a count of money");
@@ -98,7 +134,7 @@ namespace Banks
                     if (accType == "3")
                     {
                         Console.WriteLine("Okay, choose our hero");
-                        bank.ShowClients(users);
+                        ShowClients(users);
                         Console.WriteLine("Type an UId");
                         string uid = Console.ReadLine();
                         Console.WriteLine("Type a count of money");
@@ -110,7 +146,7 @@ namespace Banks
                 if (key == "3")
                 {
                     Console.WriteLine("Okay, choose our hero");
-                    bank.ShowClients(users);
+                    ShowClients(users);
                     string uid = Console.ReadLine();
                     Console.WriteLine("Type an UId");
                     Console.WriteLine("Type amount sum");
@@ -122,7 +158,7 @@ namespace Banks
                 if (key == "4")
                 {
                     Console.WriteLine("Okay, choose our hero");
-                    bank.ShowClients(users);
+                    ShowClients(users);
                     string uid = Console.ReadLine();
                     Console.WriteLine("Type an UId");
                     Console.WriteLine("Type amount sum");
@@ -134,7 +170,7 @@ namespace Banks
                 if (key == "5")
                 {
                     Console.WriteLine("Okay, choose our heroes");
-                    bank.ShowClients(users);
+                    ShowClients(users);
                     Console.WriteLine("Type an UIds of 1st user");
                     int fromId = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("Type an UIds of 2nd user");
@@ -147,17 +183,17 @@ namespace Banks
 
                 if (key == "6")
                 {
-                    bank.ShowClients(users);
+                    ShowClients(users);
                 }
 
                 if (key == "7")
                 {
-                    bank.ShowAccounts();
+                    ShowAccounts(bank.Accounts);
                 }
 
                 if (key == "8")
                 {
-                    bank.ShowTransactions();
+                    ShowTransactions(bank.Transactions);
                 }
 
                 if (key == "9")

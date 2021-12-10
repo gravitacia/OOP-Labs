@@ -1,8 +1,8 @@
-namespace Banks
+namespace Banks.BankService
 {
-    public class DYP
+    public class DepositYearPercent
     {
-        public DYP(double neededamount, double appropriatepercent)
+        public DepositYearPercent(double neededamount, double appropriatepercent)
         {
                 NeededAmount = neededamount;
                 AppropriatePercent = appropriatepercent;

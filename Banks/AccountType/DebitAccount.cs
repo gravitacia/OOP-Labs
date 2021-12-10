@@ -1,5 +1,7 @@
 using System;
+using Banks.BankInformationBuilder;
 using Banks.BankService;
+using Banks.Utilities;
 
 namespace Banks.AccountType
 {
@@ -12,7 +14,7 @@ namespace Banks.AccountType
 
         public DebitAccount(string clientid, double money, DateProvider today, bool trust, BankInformation bankinfo)
         {
-            AccType = "Debit";
+            AccType = EnumAccountTypes.Debit;
             Id = bankinfo.AvailibleAccountId;
             ClientId = clientid;
             _percentPay = 0;

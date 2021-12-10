@@ -1,19 +1,15 @@
 using System.Collections.Generic;
+using Banks.BankService;
 
-namespace Banks.BankService
+namespace Banks.BankInformationBuilder
 {
     public class BankInformation
     {
-        public BankInformation(double trustlimit, double debityearlypercent, double creditlimit, double creditmonthlycomission, List<DYP> deposityearlypercent)
+        public BankInformation()
             {
                 AvailibleClientId = 0;
                 AvailibleAccountId = 0;
                 AvailibleTransactionId = 0;
-                TrustLimit = trustlimit;
-                DebitYearlyPercent = debityearlypercent;
-                CreditLimit = creditlimit;
-                CreditMonthlyComission = creditmonthlycomission;
-                DepositYearlyPercent = deposityearlypercent;
             }
 
         public int AvailibleClientId { get; set; }
@@ -23,6 +19,6 @@ namespace Banks.BankService
         public double DebitYearlyPercent { get; set; }
         public double CreditLimit { get; set; }
         public double CreditMonthlyComission { get; set; }
-        public List<DYP> DepositYearlyPercent { get; set; }
+        public List<DepositYearPercent> DepositYearlyPercent { get; set; }
     }
 }

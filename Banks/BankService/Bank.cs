@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 using Banks.AccountType;
+using Banks.BankInformationBuilder;
+using Banks.TransactionsService;
 using Banks.UserService;
+using Banks.Utilities;
 
 namespace Banks.BankService
 {
-    internal class Bank
+    public class Bank
     {
         public Bank(int id, BankInformation bankinfo)
         {
-            ID = id;
+            Id = id;
             Accounts = new List<AccountReference>();
             Transactions = new List<BankTransactions>();
             BankInfo = bankinfo ?? throw new ArgumentNullException(nameof(bankinfo));
         }
 
-        public int ID { get; set; }
+        public int Id { get; set; }
         public List<AccountReference> Accounts { get; set; }
         public List<BankTransactions> Transactions { get; set; }
         public BankInformation BankInfo { get; set; }
@@ -53,75 +55,32 @@ namespace Banks.BankService
         {
             int i = FindTransaction(id);
             if (Transactions[i].IsCanceled)
-                throw new Exception("Transaction was already canceled");
-
-            if (Transactions[i].Type == "WWL")
             {
-                int frm = FindAccount(Transactions[i].FirstAcc);
-                Accounts[frm].Replenish(Transactions[i].Amount);
-                Transactions[i].IsCanceled = true;
+                throw new BanksExeption("Transaction was already canceled");
             }
-
-            if (Transactions[i].Type == "RNT")
+            else
             {
-                int to = FindAccount(Transactions[i].FirstAcc);
-                bool t = Accounts[to].Withdraw(Transactions[i].Amount);
-                if (t)
-                    Transactions[i].IsCanceled = true;
-                else
-                    throw new Exception("Transaction cannot be canceled");
-            }
-
-            if (Transactions[i].Type == "TFR")
-            {
-                int frm = FindAccount(Transactions[i].FirstAcc);
-                int to = FindAccount(Transactions[i].SecAcc);
-                bool t = Accounts[to].Withdraw(Transactions[i].Amount);
-                if (t)
-                {
-                    Accounts[frm].Replenish(Transactions[i].Amount);
-                    Transactions[i].IsCanceled = true;
-                }
-                else
-                {
-                    throw new Exception("Transaction cannot be canceled");
-                }
+                Transactions[i].Type.Cancel(Transactions[i]);
             }
         }
 
         public void Replenish(double amount, int toId)
         {
-            int to = FindAccount(toId);
-            Accounts[to].Replenish(amount);
-            Transactions.Add(new BankTransactions("RNT", toId, amount, BankInfo));
-            BankInfo.AvailibleTransactionId += 1;
+            ITransaction replenish = new Replenishment();
+            replenish.ProcessTransaction(new BankTransactions(replenish, Accounts[toId], amount, BankInfo));
         }
 
         public void Withdraw(double amount, int fromId, DateProvider today)
         {
-            int frm = FindAccount(fromId);
-            bool t = Accounts[frm].Withdraw(amount, today);
-            if (!t)
-                throw new Exception("Withdrawal cannot be completed");
-            Transactions.Add(new BankTransactions("WWL", fromId, amount, BankInfo));
+            ITransaction withdraw = new Withdrawal();
+            withdraw.ProcessTransaction(new BankTransactions(withdraw, Accounts[fromId], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 
         public void Transfer(double amount, int fromId, int toId, DateProvider today)
         {
-            int frm = FindAccount(fromId);
-            int to = FindAccount(toId);
-            bool t = Accounts[frm].Withdraw(amount, today);
-            if (t)
-            {
-                Accounts[to].Replenish(amount);
-                Transactions.Add(new BankTransactions("TFR", fromId, toId, amount, BankInfo));
-            }
-            else
-            {
-                throw new Exception("Transfer cannot be completed");
-            }
-
+            ITransaction transfer = new Transfer();
+            transfer.ProcessTransaction(new BankTransactions(transfer, Accounts[fromId], Accounts[toId], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 
@@ -141,7 +100,7 @@ namespace Banks.BankService
             }
 
             if (ans == -1)
-                throw new Exception("Requested ID does not exists");
+                throw new BanksExeption("Requested ID does not exists");
             return ans;
         }
 
@@ -161,7 +120,7 @@ namespace Banks.BankService
             }
 
             if (ans == -1)
-                throw new Exception("Requested ID does not exists");
+                throw new BanksExeption("Requested ID does not exists");
             return ans;
         }
 
@@ -181,35 +140,8 @@ namespace Banks.BankService
             }
 
             if (ans == -1)
-                throw new Exception("Requested ID does not exists");
+                throw new BanksExeption("Requested ID does not exists");
             return ans;
-        }
-
-        public void ShowClients(List<User> users)
-        {
-            Console.WriteLine("-----Clientlist:-------");
-            Console.WriteLine("ID\tName\tSurname\tTrusted\tPassprt\tAddress");
-            foreach (User user in users)
-                Console.WriteLine(user.UId + "\t" + user.Name + "\t" + user.Surname + "\t" + user.Istrustful() + "\t" + user.Passport + "\t" + user.Address);
-            Console.WriteLine("-----------------------");
-        }
-
-        public void ShowAccounts()
-        {
-            Console.WriteLine("-----Accountlist:------");
-            Console.WriteLine("ID\tClID\tType\tMoney");
-            foreach (AccountReference account in Accounts)
-                Console.WriteLine(account.Id + "\t" + account.ClientId + "\t" + account.AccType + "\t" + account.Money);
-            Console.WriteLine("-----------------------");
-        }
-
-        public void ShowTransactions()
-        {
-            Console.WriteLine("-----Transactions:-----");
-            Console.WriteLine("ID\tType\tID1\tID2\tCncld\tMoney");
-            foreach (BankTransactions transaction in Transactions)
-                Console.WriteLine(transaction.Id + "\t" + transaction.Type + "\t" + transaction.FirstAcc + "\t" + transaction.SecAcc + "\t" + transaction.IsCanceled + "\t" + transaction.Amount);
-            Console.WriteLine("-----------------------");
         }
     }
 }

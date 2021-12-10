@@ -1,5 +1,7 @@
 using System;
+using Banks.BankInformationBuilder;
 using Banks.BankService;
+using Banks.Utilities;
 
 namespace Banks.AccountType
 {
@@ -13,7 +15,7 @@ namespace Banks.AccountType
 
         public DepositAccount(string clientid, double money, DateProvider today, bool trust, BankInformation bankinfo, DateProvider wlimit)
         {
-            AccType = "Deposit";
+            AccType = EnumAccountTypes.Deposit;
             Id = bankinfo.AvailibleAccountId;
             ClientId = clientid;
             Money = money;

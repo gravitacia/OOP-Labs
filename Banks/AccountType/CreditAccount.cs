@@ -1,4 +1,6 @@
+using Banks.BankInformationBuilder;
 using Banks.BankService;
+using Banks.Utilities;
 
 namespace Banks.AccountType
 {
@@ -11,7 +13,7 @@ namespace Banks.AccountType
 
         public CreditAccount(string clientid, double money, DateProvider today, bool trust, BankInformation bankinfo)
         {
-            AccType = "Credit";
+            AccType = EnumAccountTypes.Credit;
             Id = bankinfo.AvailibleAccountId;
             ClientId = clientid;
             Money = money;
