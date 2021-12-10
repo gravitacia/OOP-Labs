@@ -22,12 +22,14 @@ namespace Banks.Tests
             userBuilder.SetAdress("asd");
             userBuilder.SetPassport("123123");
             User user1 = userBuilder.GetUser();
+            users.Add(user1);
             
             userBuilder.SetName("Egor");
             userBuilder.SetSurname("Lol");
             userBuilder.SetAdress("asd");
             userBuilder.SetPassport("321321");
             User user2 = userBuilder.GetUser();
+            users.Add(user2);
             
             var depositspercents = new List<DepositYearPercent>();
             depositspercents.Add(new DepositYearPercent(0, 5));

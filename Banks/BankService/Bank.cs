@@ -67,20 +67,20 @@ namespace Banks.BankService
         public void Replenish(double amount, int toId)
         {
             ITransaction replenish = new Replenishment();
-            replenish.ProcessTransaction(new BankTransactions(replenish, Accounts[toId], amount, BankInfo));
+            replenish.ProcessTransaction(new BankTransactions(Accounts[toId], amount, BankInfo));
         }
 
         public void Withdraw(double amount, int fromId, DateProvider today)
         {
             ITransaction withdraw = new Withdrawal();
-            withdraw.ProcessTransaction(new BankTransactions(withdraw, Accounts[fromId], amount, BankInfo));
+            withdraw.ProcessTransaction(new BankTransactions(Accounts[fromId], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 
         public void Transfer(double amount, int fromId, int toId, DateProvider today)
         {
             ITransaction transfer = new Transfer();
-            transfer.ProcessTransaction(new BankTransactions(transfer, Accounts[fromId], Accounts[toId], amount, BankInfo));
+            transfer.ProcessTransaction(new BankTransactions(Accounts[fromId], Accounts[toId], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 

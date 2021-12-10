@@ -6,19 +6,17 @@ namespace Banks.TransactionsService
 {
     public class BankTransactions
     {
-        public BankTransactions(ITransaction tp, AccountReference acc, double amount, BankInformation bi)
+        public BankTransactions(AccountReference acc, double amount, BankInformation bi)
         {
             Id = bi.AvailibleTransactionId.ToString();
-            Type = tp;
             Amount = amount;
             FirstAcc = acc;
             IsCanceled = false;
         }
 
-        public BankTransactions(ITransaction tp, AccountReference facc, AccountReference sacc, double amount, BankInformation bi)
+        public BankTransactions(AccountReference facc, AccountReference sacc, double amount, BankInformation bi)
         {
             Id = bi.AvailibleTransactionId.ToString();
-            Type = tp;
             Amount = amount;
             FirstAcc = facc;
             SecAcc = sacc;
