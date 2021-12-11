@@ -83,7 +83,9 @@ namespace Banks.BankService
         public void Transfer(double amount, int fromId, int toId, DateProvider today)
         {
             ITransaction transfer = new Transfer();
-            transfer.ProcessTransaction(new BankTransactions(Accounts[fromId], Accounts[toId], amount, BankInfo));
+            int id1 = FindAccount(fromId);
+            int id2 = FindAccount(toId);
+            transfer.ProcessTransaction(new BankTransactions(Accounts[id1], Accounts[id2], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 
