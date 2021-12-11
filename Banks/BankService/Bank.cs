@@ -67,13 +67,16 @@ namespace Banks.BankService
         public void Replenish(double amount, int toId)
         {
             ITransaction replenish = new Replenishment();
-            replenish.ProcessTransaction(new BankTransactions(Accounts[toId], amount, BankInfo));
+            int id = FindAccount(toId);
+            replenish.ProcessTransaction(new BankTransactions(Accounts[id], amount, BankInfo));
+            BankInfo.AvailibleTransactionId += 1;
         }
 
         public void Withdraw(double amount, int fromId, DateProvider today)
         {
-            ITransaction withdraw = new Withdrawal();
-            withdraw.ProcessTransaction(new BankTransactions(Accounts[fromId], amount, BankInfo));
+            var withdraw = new Withdrawal();
+            int id = FindAccount(fromId);
+            withdraw.ProcessTransaction(new BankTransactions(Accounts[id], amount, BankInfo));
             BankInfo.AvailibleTransactionId += 1;
         }
 
@@ -90,7 +93,7 @@ namespace Banks.BankService
             int ans = -1;
             while (t < Accounts.Count())
             {
-                if (Accounts[t].Id == id)
+                if (Convert.ToInt32(Accounts[t].ClientId) == id)
                 {
                     ans = t;
                     break;

@@ -48,8 +48,8 @@ namespace Banks.Tests
             bank.Withdraw(5000, user1.UId, new DateProvider(21, 2, 2022));
             bank.Replenish(5000, user2.UId);
 
-            Assert.Equals(bank.Accounts[bank.FindAccount(user1.UId)].Money, 5000);
-            Assert.Equals(bank.Accounts[bank.FindAccount(user2.UId)].Money, 10000);
+            Assert.AreEqual(bank.Accounts[bank.FindAccount(user1.UId)].Money, 5000);
+            Assert.AreEqual(bank.Accounts[bank.FindAccount(user2.UId)].Money, 10000);
         }
         
     }
